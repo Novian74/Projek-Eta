@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ETA - CATRIDGE</title>
+
+    <!-- Link css untuk bootstrap -->
+    <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css" />
+
+    <!-- Script menggabungkan javascript -->
+    <script src="script.js"></script>
+
+    <!-- Script untuk menggunakan fungsi javascript -->
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+  </head>
+  <body>
+    <header
+      class="navbar navbar-dark sticky-top bg-secondary flex-md-nowrap p-1 shadow"
+    >
+      <a
+        class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6"
+        href="http://127.0.0.1:5501/backend"
+        ><img src="../download.png" height="60px" alt=""
+      /></a>
+      <div class="navbar-nav">
+        <div class="nav-item text-nowrap">
+          <a class="nav-link px-3 text-white" href="#" onclick="logout()"
+            >Sign out</a
+          >
+        </div>
+      </div>
+    </header>
+    <div class="container-fluid">
+      <div class="row">
+        <nav
+          id="sidebarMenu"
+          class="col-md-3 col-lg-2 d-md-block sidebar collapse px-3"
+        >
+          <div class="position-sticky pt-3 sidebar-sticky">
+            <ul class="nav flex-column">
+              <li class="nav-item">
+                <a class="nav-link" href="#" onclick="tinta()">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    fill="currentColor"
+                    class="bi bi-droplet"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M7.21.8C7.69.295 8 0 8 0c.109.363.234.708.371 1.038.812 1.946 2.073 3.35 3.197 4.6C12.878 7.096 14 8.345 14 10a6 6 0 0 1-12 0C2 6.668 5.58 2.517 7.21.8zm.413 1.021A31.25 31.25 0 0 0 5.794 3.99c-.726.95-1.436 2.008-1.96 3.07C3.304 8.133 3 9.138 3 10a5 5 0 0 0 10 0c0-1.201-.796-2.157-2.181-3.7l-.03-.032C9.75 5.11 8.5 3.72 7.623 1.82z"
+                    />
+                    <path
+                      fill-rule="evenodd"
+                      d="M4.553 7.776c.82-1.641 1.717-2.753 2.093-3.13l.708.708c-.29.29-1.128 1.311-1.907 2.87l-.894-.448z"
+                    />
+                  </svg>
+                  Stok Tinta
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#" onclick="printer()">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    fill="currentColor"
+                    class="bi bi-printer"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" />
+                    <path
+                      d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2H5zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4V3zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2H5zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1z"
+                    />
+                  </svg>
+                  Printer
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#" onclick="printCat()">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    fill="currentColor"
+                    class="bi bi-briefcase"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="M6.5 1A1.5 1.5 0 0 0 5 2.5V3H1.5A1.5 1.5 0 0 0 0 4.5v8A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-8A1.5 1.5 0 0 0 14.5 3H11v-.5A1.5 1.5 0 0 0 9.5 1h-3zm0 1h3a.5.5 0 0 1 .5.5V3H6v-.5a.5.5 0 0 1 .5-.5zm1.886 6.914L15 7.151V12.5a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5V7.15l6.614 1.764a1.5 1.5 0 0 0 .772 0zM1.5 4h13a.5.5 0 0 1 .5.5v1.616L8.129 7.948a.5.5 0 0 1-.258 0L1 6.116V4.5a.5.5 0 0 1 .5-.5z"
+                    />
+                  </svg>
+                  Printer + Catridge
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#" onclick="pelanggan()">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="feather feather-users align-text-bottom"
+                    aria-hidden="true"
+                  >
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                  </svg>
+                  Pelanggan
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#" onclick="booking()">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    fill="currentColor"
+                    class="bi bi-cart"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"
+                    />
+                  </svg>
+                  Booking List
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#" onclick="pickup()">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    fill="currentColor"
+                    class="bi bi-cart-check"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="M11.354 6.354a.5.5 0 0 0-.708-.708L8 8.293 6.854 7.146a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z"
+                    />
+                    <path
+                      d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"
+                    />
+                  </svg>
+                  Pickup List
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#" onclick="history()">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    fill="currentColor"
+                    class="bi bi-clock-history"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022l-.074.997zm2.004.45a7.003 7.003 0 0 0-.985-.299l.219-.976c.383.086.76.2 1.126.342l-.36.933zm1.37.71a7.01 7.01 0 0 0-.439-.27l.493-.87a8.025 8.025 0 0 1 .979.654l-.615.789a6.996 6.996 0 0 0-.418-.302zm1.834 1.79a6.99 6.99 0 0 0-.653-.796l.724-.69c.27.285.52.59.747.91l-.818.576zm.744 1.352a7.08 7.08 0 0 0-.214-.468l.893-.45a7.976 7.976 0 0 1 .45 1.088l-.95.313a7.023 7.023 0 0 0-.179-.483zm.53 2.507a6.991 6.991 0 0 0-.1-1.025l.985-.17c.067.386.106.778.116 1.17l-1 .025zm-.131 1.538c.033-.17.06-.339.081-.51l.993.123a7.957 7.957 0 0 1-.23 1.155l-.964-.267c.046-.165.086-.332.12-.501zm-.952 2.379c.184-.29.346-.594.486-.908l.914.405c-.16.36-.345.706-.555 1.038l-.845-.535zm-.964 1.205c.122-.122.239-.248.35-.378l.758.653a8.073 8.073 0 0 1-.401.432l-.707-.707z"
+                    />
+                    <path
+                      d="M8 1a7 7 0 1 0 4.95 11.95l.707.707A8.001 8.001 0 1 1 8 0v1z"
+                    />
+                    <path
+                      d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5z"
+                    />
+                  </svg>
+                  History List
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#" onclick="setting()">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="28"
+                    height="28"
+                    fill="currentColor"
+                    class="bi bi-gear"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"
+                    />
+                    <path
+                      d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z"
+                    />
+                  </svg>
+                  Settings
+                </a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+          <div class="btn mt-3 row d-inline-flex gap-5"></div>
+          <div
+            class="justify-content-between align-items-center pt-3 pb-2 mb-3 cont"
+          ></div>
+        </main>
+      </div>
+    </div>
+
+    <!-- MODAL TAMBAH PRINTER -->
+    <div
+      class="modal fade"
+      id="exampleModal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">
+              Tambah Printer
+            </h1>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="nama" class="form-label">Nama Printer</label>
+                <input type="text" class="form-control" id="nama" />
+              </div>
+              <div class="mb-3">
+                <label for="nama" class="form-label">Model Catridge</label>
+                <select id="model" class="form-select">
+                  <option disabled selected value="pilih">
+                    Pilih Model Catridge
+                  </option>
+                  <option value="1">Black</option>
+                  <option value="2">Black & Color</option>
+                </select>
+              </div>
+              <button
+                type="button"
+                class="btn btn-primary"
+                onclick="tambahPrinter()"
+                data-bs-dismiss="modal"
+              >
+                Tambah
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL TAMBAH PRINTER + CATRIDGE -->
+    <div
+      class="modal fade"
+      id="exampleModal2"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">
+              Tambah Printer
+            </h1>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="nama" class="form-label">Nama Printer</label>
+                <select id="selPrint" class="form-select">
+                  <option value="pilih" selected disabled>Pilih Printer</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="cat" class="form-label">Model Catridge</label>
+                <select id="selCat" class="form-select">
+                  <option value="pilih" selected disabled>
+                    Pilih Catridge
+                  </option>
+                </select>
+              </div>
+              <button
+                type="button"
+                class="btn btn-primary"
+                onclick="tambahPrintCat()"
+                data-bs-dismiss="modal"
+              >
+                Tambah
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL TAMBAH TINTA -->
+    <div
+      class="modal fade"
+      id="exampleModal3"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">
+              Tambah Tinta
+            </h1>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="nama" class="form-label">Nama Tinta</label>
+                <input type="text" class="form-control" id="tTinta" />
+              </div>
+              <div class="mb-3">
+                <label for="warna" class="form-label">Warna Tinta</label>
+                <select id="tWarnaI" class="form-select mt-2" required>
+                  <option selected disabled value="pilih">Pilih Warna</option>
+                  <option value="Black">Black</option>
+                  <option value="Cyan">Cyan</option>
+                  <option value="Yellow">Yellow</option>
+                  <option value="Magenta">Magenta</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="merek" class="form-label">Minimum Stok</label>
+                <input type="number" class="form-control" id="tMinQ" />
+              </div>
+              <div class="mb-3">
+                <label for="merek" class="form-label">Stok</label>
+                <input type="number" class="form-control" id="tStok" />
+              </div>
+              <button
+                type="button"
+                class="btn btn-primary"
+                data-bs-dismiss="modal"
+                onclick="tambahTinta()"
+              >
+                Tambah
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL EDIT TINTA -->
+    <div
+      class="modal fade"
+      id="exampleModal4"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">
+              Mengedit Tinta
+            </h1>
+          </div>
+          <div class="modal-body">
+            <form>
+              <input type="text" id="idTinta" hidden />
+              <div class="mb-3">
+                <label for="nama" class="form-label">Nama Tinta</label>
+                <input type="text" class="form-control" id="tinta" />
+              </div>
+              <div class="mb-3">
+                <label for="merek" class="form-label">Stok</label>
+                <input type="number" class="form-control" id="stok" />
+              </div>
+              <button
+                type="button"
+                class="btn btn-primary"
+                data-bs-dismiss="modal"
+                onclick="ubahTinta()"
+              >
+                Edit
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Script untuk menjalankan bootstrap -->
+    <script src="../bootstrap/js/bootstrap.min.js"></script>
+    <script>
+      // Mengambil data admin dari database
+      axios.get("http://127.0.0.1:8000/api/admin").then(function (response) {
+        let admin = response.data;
+        admin.forEach((el) => {
+          // Menambah bulan dari tanggal kirim email yang sudah lewat
+          let today = new Date();
+          let apiDateString = el.tgl_kirim_email;
+          var day = parseInt(apiDateString.substring(0, 2));
+          var month = parseInt(apiDateString.substring(3, 5)) - 1;
+          var year = parseInt(apiDateString.substring(6, 10));
+          var apiDate = new Date(year, month, day);
+          if (apiDate.getDate() === today.getDate() + 1) {
+            apiDate.setMonth(apiDate.getMonth() + 1);
+          }
+          var bulan = apiDate.getMonth() + 1;
+          var tahun = apiDate.getFullYear();
+          var hasil =
+            ("0" + apiDate.getDate()).slice(-2) +
+            "-" +
+            ("0" + bulan).slice(-2) +
+            "-" +
+            tahun;
+
+          // Membuat variabel yang akan dikirim ke database
+          let data = {
+            tgl_kirim_email: hasil,
+            waktu_kirim_email: "08:00",
+          };
+
+          // Mengirim ke database
+          axios.put("http://127.0.0.1:8000/api/admin/1", data);
+        });
+      });
+
+      // Mengambil data pesanan dari API
+      axios.get("http://127.0.0.1:8000/api/booking").then(function (response) {
+        // Melakukan pemeriksaan saat batas waktu pesanan sudah habis
+        var batas = new Date();
+        var test = response.data;
+        for (var i = 0; i < test.length; i++) {
+          if (new Date(test[i].batasW) < batas) {
+            var nomornota = test[i].nomornota;
+            var iduser = test[i].iduser;
+
+            // Data pelanggan akan langsung dihapus
+            axios.delete("http://127.0.0.1:8000/api/pelanggan/" + iduser);
+
+            // Data pesanan akan langsung dihapus
+            axios
+              .delete("http://127.0.0.1:8000/api/booking/" + nomornota)
+              .then(console.log("berhasil"));
+          }
+        }
+      });
+
+      // Mengambil data catridge di database
+      axios.get("http://127.0.0.1:8000/api/tintas").then(function (response) {
+        let stok = response.data;
+        // Melakukan pengulangan untuk mengetahui stok tinta yang habis
+        for (var i = 0; i < stok.length; i++) {
+          // Jika stok sudah dibawah minimun stok akan menampilkan peringatan
+          if (stok[i].stok < stok[i].qty) {
+            document.querySelector(".cont").innerHTML +=
+              `<div class="alert alert-primary" role="alert">
+                  Tinta ` +
+              stok[i].catridge_name +
+              ` Stok Menipis ! Segera Lakukan Pembelian !
+                </div>`;
+          }
+
+          // Jika stok sudah mencapai 0 akan tertulis tetap 0
+          if (stok[i].stok < 0) {
+            var idTinta = stok[i].idcatridge;
+            let data = {
+              stok: "0",
+            };
+
+            // Mengirim stok ke database
+            axios.put("http://127.0.0.1:8000/api/tintas/stok/" + idTinta, data);
+          }
+        }
+      });
+
+      // Menggambil session storage login
+      var isLoggedIn = localStorage.getItem("isLoggedIn");
+
+      // Jika belum login akan dikembalikan ke halaman login
+      if (!isLoggedIn) {
+        window.location.href = "http://127.0.0.1:5501/index.html";
+      }
+    </script>
+  </body>
+</html>
