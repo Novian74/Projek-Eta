@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ETA - CATRIDGE</title>
+
+    <!-- Link css untuk bootstrap -->
+    <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css" />
+
+    <!-- Script menggabungkan javascript -->
+    <script src="script.js"></script>
+
+    <!-- Script untuk menggunakan fungsi javascript -->
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+
+    <!-- Script untuk menampilkan alert -->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    <!-- CSS untuk membedakan layar ponsel dan destop -->
+    <style>
+      @media (min-width: 1024px) {
+        body {
+          overflow-x: hidden;
+        }
+      }
+      @media (max-width: 500px) {
+        .kecil {
+          font-size: small;
+        }
+        .kk {
+          width: 150px;
+        }
+        .ki {
+          margin-left: 10px;
+        }
+        .ka {
+          margin-left: 10px;
+        }
+        .alert {
+          width: 80%;
+          font-size: 14px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+        <nav class="navbar navbar-expand-sm navbar-light bg-light sticky-top">
+          <div class="container">
+            <a class="navbar-brand" href="http://127.0.0.1:5501/backend">
+              <img src="../download.png" alt="" width="150" />
+            </a>
+            <button
+              class="navbar-toggler"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#navbarNav"
+              aria-controls="navbarNav"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
+            >
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+              <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                  <a class="nav-link" href="#" onclick="tinta()">Stok Tinta</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#" onclick="printer()">Printer</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#" onclick="printCat()"
+                    >Printer + Cartridge</a
+                  >
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#" onclick="pelanggan()"
+                    >Pelanggan</a
+                  >
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#" onclick="booking()"
+                    >Booking List</a
+                  >
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#" onclick="pickup()"
+                    >Pickup List</a
+                  >
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#" onclick="history()"
+                    >History List</a
+                  >
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#" onclick="setting()">Settings</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#" onclick="logout()">Logout</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+
+        <main class="row ms-3">
+          <div class="btn mt-3 col d-inline-flex gap-5"></div>
+          <div
+            class="justify-content-between align-items-center pt-3 pb-2 mb-3 cont"
+          ></div>
+          <div
+            class="justify-content-between align-items-center pt-3 pb-2 mb-3 cont2"
+          ></div>
+        </main>
+      </div>
+    </div>
+
+    <!-- MODAL TAMBAH PRINTER -->
+    <div
+      class="modal fade"
+      id="exampleModal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">
+              Tambah Printer
+            </h1>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="nama" class="form-label">Nama Printer</label>
+                <input type="text" class="form-control" id="nama" />
+              </div>
+              <div class="mb-3">
+                <label for="nama" class="form-label">Model Catridge</label>
+                <select id="model" class="form-select">
+                  <option disabled selected value="pilih">
+                    Pilih Model Catridge
+                  </option>
+                  <option value="1">Black</option>
+                  <option value="2">Black & Color</option>
+                </select>
+              </div>
+              <button
+                type="button"
+                class="btn btn-primary"
+                onclick="tambahPrinter()"
+                data-bs-dismiss="modal"
+              >
+                Tambah
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL TAMBAH PRINTER + CATRIDGE -->
+    <div
+      class="modal fade"
+      id="exampleModal2"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">
+              Tambah Printer
+            </h1>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="nama" class="form-label">Nama Printer</label>
+                <select id="selPrint" class="form-select">
+                  <option value="pilih" selected disabled>Pilih Printer</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="cat" class="form-label">Model Catridge</label>
+                <select id="selCat" class="form-select">
+                  <option value="pilih" selected disabled>
+                    Pilih Catridge
+                  </option>
+                </select>
+              </div>
+              <button
+                type="button"
+                class="btn btn-primary"
+                onclick="tambahPrintCat()"
+                data-bs-dismiss="modal"
+              >
+                Tambah
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL TAMBAH TINTA -->
+    <div
+      class="modal fade"
+      id="exampleModal3"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">
+              Tambah Tinta
+            </h1>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="nama" class="form-label">Nama Tinta</label>
+                <input type="text" class="form-control" id="tTinta" />
+              </div>
+              <div class="mb-3">
+                <label for="model" class="form-label">Model Tinta</label>
+                <select id="tModel" class="form-select mt-2" required>
+                  <option selected disabled value="pilih">Pilih Model</option>
+                  <option value="1">Toner</option>
+                  <option value="2">Cartridge</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="warna" class="form-label">Warna Tinta</label>
+                <select id="tWarnaI" class="form-select mt-2" required>
+                  <option selected disabled value="pilih">Pilih Warna</option>
+                  <option value="Black">Black</option>
+                  <option value="Cyan">Cyan</option>
+                  <option value="Yellow">Yellow</option>
+                  <option value="Magenta">Magenta</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="merek" class="form-label">Minimum Stok</label>
+                <input type="number" class="form-control" id="tMinQ" />
+              </div>
+              <div class="mb-3">
+                <label for="merek" class="form-label">Stok</label>
+                <input type="number" class="form-control" id="tStok" />
+              </div>
+              <button
+                type="button"
+                class="btn btn-primary"
+                data-bs-dismiss="modal"
+                onclick="tambahTinta()"
+              >
+                Tambah
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL EDIT TINTA -->
+    <div
+      class="modal fade"
+      id="exampleModal4"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">
+              Mengedit Tinta
+            </h1>
+          </div>
+          <div class="modal-body">
+            <form>
+              <input type="text" id="idTinta" hidden />
+              <div class="mb-3">
+                <label for="nama" class="form-label">Nama Tinta</label>
+                <input type="text" class="form-control" id="tinta" />
+              </div>
+              <div class="mb-3">
+                <label for="merek" class="form-label">Stok</label>
+                <input type="number" class="form-control" id="stok" />
+              </div>
+              <button
+                type="button"
+                class="btn btn-primary"
+                data-bs-dismiss="modal"
+                onclick="ubahTinta()"
+              >
+                Edit
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Script untuk menjalankan bootstrap -->
+    <script src="../bootstrap/js/bootstrap.min.js"></script>
+    <script>
+      // Mengambil data admin dari database
+      axios.get("http://127.0.0.1:8000/api/admin").then(function (response) {
+        let admin = response.data;
+        admin.forEach((el) => {
+          // Menambah bulan dari tanggal kirim email yang sudah lewat
+          let today = new Date();
+          let apiDateString = el.tgl_kirim_email;
+          var day = parseInt(apiDateString.substring(0, 2));
+          var month = parseInt(apiDateString.substring(3, 5)) - 1;
+          var year = parseInt(apiDateString.substring(6, 10));
+          var apiDate = new Date(year, month, day);
+          if (apiDate.getDate() === today.getDate() + 1) {
+            apiDate.setMonth(apiDate.getMonth() + 1);
+          }
+          var bulan = apiDate.getMonth() + 1;
+          var tahun = apiDate.getFullYear();
+          var hasil =
+            ("0" + apiDate.getDate()).slice(-2) +
+            "-" +
+            ("0" + bulan).slice(-2) +
+            "-" +
+            tahun;
+
+          // Membuat variabel yang akan dikirim ke database
+          let data = {
+            tgl_kirim_email: hasil,
+            waktu_kirim_email: "08:00",
+          };
+
+          // Mengirim ke database
+          axios.put("http://127.0.0.1:8000/api/admin/1", data);
+        });
+      });
+
+      // Mengambil data pesanan dari API
+      axios.get("http://127.0.0.1:8000/api/booking").then(function (response) {
+        // Melakukan pemeriksaan saat batas waktu pesanan sudah habis
+        var batas = new Date();
+        var test = response.data;
+        for (var i = 0; i < test.length; i++) {
+          if (new Date(test[i].batasW) < batas) {
+            var nomornota = test[i].nomornota;
+            var iduser = test[i].iduser;
+
+            // Data pelanggan akan langsung dihapus
+            axios.delete("http://127.0.0.1:8000/api/pelanggan/" + iduser);
+
+            // Data pesanan akan langsung dihapus
+            axios
+              .delete("http://127.0.0.1:8000/api/booking/" + nomornota)
+              .then(console.log("berhasil"));
+          }
+        }
+      });
+
+      // Mengambil data catridge di database
+      axios.get("http://127.0.0.1:8000/api/tintas").then(function (response) {
+        let stok = response.data;
+        // Melakukan pengulangan untuk mengetahui stok tinta yang habis
+        for (var i = 0; i < stok.length; i++) {
+          // Jika stok sudah dibawah minimun stok akan menampilkan peringatan
+          if (stok[i].stok < stok[i].qty) {
+            document.querySelector(".cont").innerHTML +=
+              `<div class="alert alert-primary" role="alert">
+                  Tinta ` +
+              stok[i].catridge_name +
+              ` Stok Menipis ! Segera Lakukan Pembelian !
+                </div>`;
+          }
+
+          // Jika stok sudah mencapai 0 akan tertulis tetap 0
+          if (stok[i].stok < 0) {
+            var idTinta = stok[i].idcatridge;
+            let data = {
+              stok: "0",
+            };
+
+            // Mengirim stok ke database
+            axios.put("http://127.0.0.1:8000/api/tintas/stok/" + idTinta, data);
+          }
+        }
+      });
+
+      // Menggambil session storage login
+      var isLoggedIn = localStorage.getItem("isLoggedIn");
+
+      // Jika belum login akan dikembalikan ke halaman login
+      if (!isLoggedIn) {
+        window.location.href = "http://127.0.0.1:5501/index.html";
+      }
+    </script>
+  </body>
+</html>
