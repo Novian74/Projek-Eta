@@ -7,9 +7,9 @@
  * 
  * 
  ******* FUNCTION ********
- * function index :
- * function tglKirim :
- * function downlaod :
+ * function index : Untuk menampilkan tabel histori email
+ * function tglKirim : Untuk mengubah tanggal pengiriman email
+ * function downlaod : Untuk mendownload dokumen yang telah dikirim email
  * 
  */
 
@@ -21,7 +21,6 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 
 class HistoriEmailController extends Controller
@@ -29,7 +28,10 @@ class HistoriEmailController extends Controller
   // Function untuk menampilkan data histori pengiriman email tiap bulan
   public function index()
   {
+    // Mengambil data dari database
     $email = HistoriEmail::select('id', 'tgl_kirim')->get();
+
+    // Menampilkan ke halaman setting
     return view('backend.setting', ['emails' => $email]);
   }
 
@@ -47,17 +49,22 @@ class HistoriEmailController extends Controller
     // Set tanggal pada bulan berikutnya dengan angka yang diinputkan
     $tanggalBerikutnya->day($inputTanggal);
 
+    // Mengubah data pengiriman email otomatis
     admin::where('id', 1)->update(['tgl_kirim_email' => $tanggalBerikutnya->toDateString()]);
 
+    // Menambahkan pemberitahuan
     Session::flash('success', 'Pengiriman email akan dikirim pada ' . $tanggalBerikutnya->toDateString());
 
+    // Kembali ke halaman setting
     return redirect()->route('setting.home');
   }
 
   public function download($id)
   {
+    // Mengambil data pdf sesuai id
     $historiEmail = HistoriEmail::find($id);
 
+    // Melakukan pengecekan ada filenya atau tidak
     if ($historiEmail) {
       // Menggambil file pdf dari database
       $fileData = $historiEmail->pdf;

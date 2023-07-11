@@ -7,10 +7,10 @@
  * 
  * 
  ******* FUNCTION ********
- * function index :
- * function tampilTambahRelasi :
- * function store :
- * function destroy :
+ * function index : Untuk menampilkan halaman relasi 
+ * function tampilTambahRelasi : Untuk menampilkan form relasi
+ * function store : Untuk menambah relasi
+ * function destroy : Untuk menghapus relasi
  */
 
 
@@ -21,49 +21,61 @@ use App\Models\Printer;
 use App\Models\Tinta;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 
 class PrintCatridgeController extends Controller
 {
-  // Function untuk menampilkan data printer dan catridge setelah di relasikan
   public function index()
   {
+    // Membuat relasi antara printer dan tinta dari database
     $printcat = DB::table('print_catridges')
       ->join('printers', 'print_catridges.idprint', '=', 'printers.idprint')
       ->join('tintas', 'print_catridges.idcatridge', '=', 'tintas.idcatridge')
       ->select('print_catridges.*', 'printers.printer_name', 'tintas.catridge_name', 'tintas.warna')
       ->orderBy('idprint', 'asc')
       ->get();
+
+    // Menampilkan halaman relasi
     return view('backend.printcat', ['princats' => $printcat]);
   }
 
   public function tampilTambahRelasi()
   {
+    // Mengambil data printer dan data tinta
     $printer = Printer::all();
     $catridge = Tinta::all();
+
+    // Menampilkan form relasi
     return view('backend.form.formprintcat', ['printers' => $printer, 'catridges' => $catridge]);
   }
 
-  // Function untuk menambah relasi printer dan catridge
   public function store(Request $request)
   {
+    // Membuat validasi pada form yang diinputkan
     $validatedData = $request->validate([
       'idprint' => 'required',
       'idcatridge' => 'required',
     ]);
 
+    // Menambahkan data ke database
     PrintCatridge::create($validatedData);
 
+    // Membuat pemberitahuan
     Session::flash('success', 'Relasi Berhasil Ditambahkan !');
 
+    // Mengembalikan ke menu relasi
     return redirect()->route('princat.home');
   }
 
   public function destroy($id)
   {
+    // Mencari data yang ingin dihapus sesuai id
     PrintCatridge::where('PrCt', $id)->delete();
+
+    // Membuat pemberitahuan
     Session::flash('success', 'Relasi Berhasil Dihapus !');
+
+    // Mengembalikan ke menu relasi
     return redirect()->route('princat.home');
   }
 }

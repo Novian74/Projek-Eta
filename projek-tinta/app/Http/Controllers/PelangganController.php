@@ -7,9 +7,9 @@
  * 
  * 
  ******* FUNCTION ********
- * function index :
- * fucntion store :
- * function delete :
+ * function index : Untuk menampilkan halaman pelanggan
+ * fucntion store : Untuk menambah pelanggan
+ * function delete : Untuk menghapus pelanggan
  * 
  */
 
@@ -20,22 +20,24 @@ use App\Http\Requests\StorePelangganRequest;
 
 class PelangganController extends Controller
 {
-  // Function untuk menampilkan semua data pelanggan
   public function index()
   {
+    // Mengambil data dari database yang diurutkan sesuai iduser pertama
     $pelanggan = Pelanggan::orderBy("iduser", "asc")->get();
+
+    // Menampilkan halaman pelanggan
     return view('backend.pelanggan', ['pelanggans' => $pelanggan]);
   }
 
-  // Function untuk menambah data pelanggan
   public function store(StorePelangganRequest $request)
   {
+    // Menambahkan data pelanggan
     Pelanggan::create($request->validated());
   }
 
-  // Function untuk menghapus data pelanggan
   public function delete($id)
   {
+    // Menghapus data pelanggan
     Pelanggan::where("iduser", $id)->delete();
   }
 }

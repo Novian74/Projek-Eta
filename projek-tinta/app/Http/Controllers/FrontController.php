@@ -114,18 +114,22 @@ class FrontController extends Controller
       'text' => $pesan,
     ]);
 
+    // Menampilkan halaman nota
     return view('frontend.nota', ['nomornota' => $dataB['nomornota'], 'tinta' => $validatedData['warna']]);
   }
 
   public function home()
   {
+    // Menampilkan halaman lacak
     return view('frontend.lacak', ['datas' => '']);
   }
 
   public function lacak(Request $request)
   {
+    // Mengambil data form nomornota
     $nomornota = $request->input('lacak');
 
+    // Mencari data sesuai nomornota
     $lacak = DB::table('bookings')
       ->join('pelanggans', 'bookings.iduser', '=', 'pelanggans.iduser')
       ->join('printers', 'bookings.idprint', '=', 'printers.idprint')
@@ -134,6 +138,7 @@ class FrontController extends Controller
       ->select('bookings.*', 'pelanggans.nama', 'printers.printer_name', 'tintas.warna')
       ->get();
 
+      // Menampilkan datanya
     return view('frontend.lacak', ['datas' => $lacak]);
   }
 }
