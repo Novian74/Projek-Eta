@@ -7,17 +7,17 @@
  * 
  * 
  ******* FUNCTION ********
- * function index :
- * function cekPrinter :
- * function pesanTinta :
- * function home :
- * function lacak :
+ * function index : Menampilkan dropdown printer pada halaman utama
+ * function cekPrinter : Mengecek model tinta pada printer yang dipilih
+ * function pesanTinta : Membuat pesanan tinta
+ * function home : Menampilkan halaman lacak pesanan
+ * function lacak : Mencari pesanan sesuai yang diinputkan
  * 
  */
 
 namespace App\Http\Controllers;
 
-
+use App\Models\admin;
 use App\Models\Booking;
 use App\Models\Pelanggan;
 use App\Models\Printer;
@@ -29,24 +29,34 @@ class FrontController extends Controller
 {
   public function index()
   {
-    $printer = Printer::all();
+    // Mengambil data printer dari database
+    $printer = DB::table('printers')->orderBy("printer_name", 'asc')->get();
+
+    // Menampilkan tampilan halaman awal
     return view('frontend.pesan', ['printers' => $printer, 'id' => '']);
   }
 
   public function cekPrinter(Request $request)
   {
+    // Mengambil id dari kolom dropdown
     $id = $request->input('printer');
-    $printer = Printer::all();
+
+    // Mencari data printer 
+    $printer = DB::table('printers')->orderBy("printer_name", 'asc')->get();
     $model = Printer::where('idprint', $id)
       ->select('model_tinta')
       ->get();
+
+    // Membuat variabel untuk menampung model printer 
     $angka = $model[0]['model_tinta'];
 
+    // Menampilkan form pesanan
     return view('frontend.pesan', ['id' => $id, 'printers' => $printer, 'model' => $angka]);
   }
 
   public function pesanTinta(Request $request)
   {
+    // Membuat validasi dari form pesan
     $validatedData = $request->validate([
       'nama' => 'required',
       'departemen' => 'required',
@@ -56,6 +66,7 @@ class FrontController extends Controller
       'warna' => 'required',
     ]);
 
+    // Mencari iduser pada database yang paling akhir
     $lastIdUser = Pelanggan::max('iduser');
 
     // Mengekstrak angka dari idtinta terakhir
@@ -65,6 +76,7 @@ class FrontController extends Controller
     $newNumber = $lastNumber + 1;
     $newIdUser = 'USER ' . str_pad($newNumber, 3, '0', STR_PAD_LEFT);
 
+    // Membuat variabel yang berisi data pelanggan
     $dataP = [
       'iduser' => $newIdUser,
       'nama' => $validatedData['nama'],
@@ -73,6 +85,7 @@ class FrontController extends Controller
       'departemen' => $validatedData['departemen'],
     ];
 
+    // Mencari tinta yang sesuai dengan printer dan warna yang dipilih
     $cek = DB::table('print_catridges')
       ->join('printers', 'print_catridges.idprint', '=', 'printers.idprint')
       ->join('tintas', 'print_catridges.idcatridge', '=', 'tintas.idcatridge')
@@ -82,8 +95,11 @@ class FrontController extends Controller
       ->get();
     $data = json_decode($cek, true);
     $idcatridge = $data[0]['idcatridge'];
+
+    // Membuat nomor random untuk nomor nota
     $no = mt_rand(100000, 999999);
 
+    // Membuat variabel berisi data pesanan
     $dataB = [
       'nomornota' => "$no",
       'iduser' => $dataP['iduser'],
@@ -93,26 +109,33 @@ class FrontController extends Controller
       'batasW' => 'not',
     ];
 
+    // Memasukkan data pelanggan dan data pesanan ke database
     Pelanggan::create($dataP);
     Booking::create($dataB);
 
-    // Pesan yang ingin dikirim
-    $pesan = 'Ada Pesanan Tinta !';
+    // Mendapatkan semua data pengguna dengan chat ID dari database
+    $usersWithChatID = admin::whereNotNull('telegram')->get();
 
     // Membuat variabel berisi token bot telegram
     $token = '6007053333:AAHN_tUHbVie6AR2P6wrXChGae-JeOcRiLY';
 
-    // Membuat variabel berisi chat id telegram tujuan
-    $chat_id = '6127290706';
-
-    // Membuat variabel berisi link mengirim notifikasi
+    // Membuat variabel berisi link untuk mengirim notifikasi
     $url = "https://api.telegram.org/bot{$token}/sendMessage";
 
-    // Mengirim pesan ke telegram
-    Http::get($url, [
-      'chat_id' => $chat_id,
-      'text' => $pesan,
-    ]);
+    // Pesan yang ingin dikirim
+    $pesan = 'Ada Pesanan Tinta !';
+
+    // Melakukan pengulangan sesuai chat id admin
+    foreach ($usersWithChatID as $user) {
+      // Mendapatkan chat ID pengguna saat ini
+      $chat_id = $user->telegram;
+
+      // Mengirim pesan ke telegram pengguna saat ini
+      Http::get($url, [
+        'chat_id' => $chat_id,
+        'text' => $pesan,
+      ]);
+    }
 
     // Menampilkan halaman nota
     return view('frontend.nota', ['nomornota' => $dataB['nomornota'], 'tinta' => $validatedData['warna']]);
@@ -138,7 +161,7 @@ class FrontController extends Controller
       ->select('bookings.*', 'pelanggans.nama', 'printers.printer_name', 'tintas.warna')
       ->get();
 
-      // Menampilkan datanya
+    // Menampilkan datanya
     return view('frontend.lacak', ['datas' => $lacak]);
   }
 }

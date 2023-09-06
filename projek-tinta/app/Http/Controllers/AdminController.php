@@ -3,23 +3,23 @@
 /**  DOMPDF /
  * name     : dompdf/dompdf
  * descrip. : DOMPDF is a CSS 2.1 compliant HTML to PDF converter
- * keywords : 
+ * keywords :
  * versions : * v2.0.3
  * type     : library
  * license  : GNU Lesser General Public License v2.1 only (LGPL-2.1) (OSI approved) https://spdx.org/licenses/LGPL-2.1.html#licenseText
  * homepage : https://github.com/dompdf/dompdf
  * source   : [git] https://github.com/dompdf/dompdf.git e8d2d5e37e8b0b30f0732a011295ab80680d7e85
- * 
+ *
  * Visual Studio Code v1.79.2
  * Laravel Framework v10.10.1
  * Xampp Control Panel v3.3.0
- * 
+ *
  ****** FUNCTION ********
  * function formLogin : Untuk menampilkan formulir login & melakukan pengiriman email otomatis
  * function login : Untuk memvalidasi jawaban formulir dan melakukan login ke admin
  * function adminPage : Untuk menampilkan halaman utama admin
  * function logout : Untuk mengeluarkan admin dari halaman admin
- * 
+ *
  */
 
 namespace App\Http\Controllers;
@@ -38,9 +38,11 @@ use Illuminate\Support\Facades\Session;
 
 class AdminController extends Controller
 {
-
   public function formLogin()
   {
+    // Mengambil alamat email dari database
+    $usersWithEmail = admin::whereNotNull('email')->get();
+
     // Mengambil tanggal pengiriman email di database Admin
     $tgl = admin::select('tgl_kirim_email')->get();
     $data = json_decode($tgl, true);
@@ -87,6 +89,9 @@ class AdminController extends Controller
       // Render view blade ke HTML
       $html = view('email', compact('datas', 'periode'))->render();
 
+      // Mengambil file logo
+      $gambarPath = public_path('images/logo.png');
+
       // Muat HTML ke objek Dompdf
       $pdf->loadHtml($html);
 
@@ -96,23 +101,34 @@ class AdminController extends Controller
       // Render PDF
       $pdf->render();
 
+      // Menambahkan logo di pdf
+      $canvas = $pdf->getCanvas();
+      $canvas->image($gambarPath, 615, 30, 190, 80);
+
       // Simpan PDF ke variable
       $pdfContent = $pdf->output();
 
       // Membuat format tanggal untuk histori pengiriman
       $tgl_kirim = Carbon::now('Asia/Jakarta')->format('d-m-Y');
 
-      // Memasukan ke database file pdf & tanggal pengiriman
-      DB::table('histori_emails')->insert([
-        'tgl_kirim' => $tgl_kirim,
-        'pdf' => $pdfContent,
-      ]);
+      foreach ($usersWithEmail as $user) {
+        $email = $user->email;
 
-      // Kirim PDF melalui email
-      $mail = new kirimEmail($pdfContent);
-      $mail->to('rahmandha74@gmail.com');
-      $mail->subject('Laporan Bulanan');
-      Mail::send($mail);
+        if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+          // Memasukan ke database file pdf & tanggal pengiriman
+          DB::table('histori_emails')->insert([
+            'email_penerima' => $email,
+            'tgl_kirim' => $tgl_kirim,
+            'pdf' => $pdfContent,
+          ]);
+
+          // Kirim PDF melalui email
+          $mail = new kirimEmail($pdfContent);
+          $mail->to($email);
+          $mail->subject('Laporan Bulanan');
+          Mail::send($mail);
+        }
+      }
     }
 
     // Menampilkan formulir login
@@ -127,27 +143,47 @@ class AdminController extends Controller
 
     // Mencari data yang sesuai username
     $admin = Admin::where('username', '=', $username)->first();
+    $level = $admin->level;
 
     // Memeriksa kiriman data sesuai dengan data admin
     if ($admin && $admin->username === $username && $admin->password === $password) {
       // Jika sesuai, set session dan redirect ke halaman admin
       session(['username' => $username]);
+      session(['level' => $level]);
       return redirect()->route('admin');
     } else {
       // Jika tidak sesuai, kembali ke halaman login dengan pesan error
-      return redirect()->back()->with('error', 'Username atau password salah.');
+      return redirect()
+        ->back()
+        ->with('error', 'Username atau password salah.');
     }
   }
 
   public function adminPage()
   {
-    // Mengambil data tinta untuk diperiksa stok nya
+    // Melakukan pengecekan jika yang login superadmin
+    $level = session('level');
+    if ($level === 'superadmin') {
+      $superadmin = "superadmin";
+    } else {
+      $superadmin = "";
+    }
+
+    // Inisialisasi array pesan peringatan
+    $warnings = [];
+
+    // Mengambil data printer dari database
     $data = Tinta::select('catridge_name', 'stok', 'qty')->get();
     foreach ($data as $item) {
       // Jika stok sudah melewati batas minimum akan mengeluarkan peringatan
       if ($item->stok <= $item->qty) {
-        Session::flash('error', 'Stok tinta ' . $item->catridge_name . ' Menipis !');
+        $warnings[] = 'Stok tinta ' . $item->catridge_name . ' Menipis !';
       }
+    }
+
+    // Simpan pesan-pesan peringatan dalam session flash
+    if (!empty($warnings)) {
+      Session::flash('errors', $warnings);
     }
 
     // Mengambil data booking & membuat format tanggal hari ini
@@ -172,20 +208,22 @@ class AdminController extends Controller
         $nomornota = $booking->nomornota;
         $iduser = $booking->iduser;
 
-        // Menghapus pesanan dan identitas pelanggan 
+        // Menghapus pesanan dan identitas pelanggan
         Booking::where('nomornota', $nomornota)->delete();
         Pelanggan::where('iduser', $iduser)->delete();
       }
     }
 
     // Menampilkan halaman admin
-    return view('backend.admin');
+    return view('backend.admin', ['superadmin' => $superadmin]);
   }
 
   public function logout(Request $request)
   {
     // Menghapus session dan redirect ke halaman login
     $request->session()->forget('username');
+
+    // Kembali ke halaman login
     return redirect()->route('login');
   }
 }

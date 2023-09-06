@@ -7,6 +7,7 @@ use App\Http\Controllers\HistoriEmailController;
 use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\PrintCatridgeController;
 use App\Http\Controllers\PrinterController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TintaController;
 use Illuminate\Support\Facades\Route;
 
@@ -32,6 +33,7 @@ Route::get('/admin', [AdminController::class, 'formLogin'])->name('login');
 Route::post('/admin/login/berhasil', [AdminController::class, 'login'])->name('admin.login');
 Route::get('/admin/logout', [AdminController::class, 'logout'])->name('logout');
 
+// Agar tidak ada sembarangan user masuk ke menu admin sebelum login
 Route::group(['middleware' => 'admin'], function () {
   Route::get('/admin/homepage', [AdminController::class, 'adminPage'])->name('admin');
 
@@ -68,7 +70,14 @@ Route::group(['middleware' => 'admin'], function () {
   Route::post('/admin/report/tampil', [BookingController::class, 'tampilData'])->name('report.tampil');
   Route::get('/admin/report/cetak', [BookingController::class, 'cetak'])->name('report.cetak');
 
-  Route::get('/admin/setting', [HistoriEmailController::class, 'index'])->name('setting.home');
-  Route::put('/admin/setting/tglkirim', [HistoriEmailController::class, 'tglKirim'])->name('setting.kirim');
-  Route::get('/admin/setting/download/{id}', [HistoriEmailController::class, 'download'])->name('setting.download');
+  Route::get('admin/setting/listuser',[SettingController::class,'listUser'])->name('setting.listuser');
+  Route::get('admin/setting/listuser/tambah',[SettingController::class,'formAdmin'])->name('listuser.tambah');
+  Route::post('admin/setting/listuser/tambah/store',[SettingController::class,'tambahAdmin'])->name('listuser.store');
+  Route::delete('/setting/listuser/{id}', [SettingController::class, 'destroy'])->name('listuser.destroy');
+  Route::get('/admin/setting/historiemail', [HistoriEmailController::class, 'index'])->name('setting.historiemail');
+  Route::get('/admin/setting/historiemail/dowmload/{id}', [HistoriEmailController::class, 'download'])->name('historiemail.download');
+  Route::get('/admin/setting/profile', [SettingController::class, 'profile'])->name('setting.profile');
+  Route::put('/admin/setting/profile/tglkirim', [SettingController::class, 'tglKirim'])->name('profile.kirim');
+  Route::put('/admin/setting/profile/email', [SettingController::class, 'email'])->name('profile.email');
+  Route::put('/admin/setting/profile/telegram', [SettingController::class, 'telegram'])->name('profile.tele');
 });

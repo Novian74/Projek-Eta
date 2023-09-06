@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class HistoriEmail extends Model
 {
-  use HasFactory;
+    use HasFactory;
 
-  protected $fillable = ['tgl_kirim','pdf'];
+    protected $fillable = ['email_penerima', 'tgl_kirim', 'pdf'];
 }

@@ -12,6 +12,10 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         h1 {
@@ -47,7 +51,7 @@
 <body>
     <div>
         <div>
-            <div>
+            <div class="header">
                 <h1>Report Bulanan</h1>
                 <h4>{{ $periode }}</h4>
             </div>
@@ -56,12 +60,11 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>Nomor Nota</th>
+                                <th>No Nota</th>
                                 <th>Nama</th>
                                 <th>Departemen</th>
                                 <th>Printer</th>
-                                <th>Catridge</th>
-                                <th>Warna Catridge</th>
+                                <th>Toner</th>
                                 <th>Tanggal Pesan</th>
                                 <th>Tanggal Ambil</th>
                             </tr>
@@ -78,7 +81,6 @@
                                     <td>{{ $data->departemen }}</td>
                                     <td>{{ $data->printer_name }}</td>
                                     <td>{{ $data->catridge_name }}</td>
-                                    <td>{{ $data->warna }}</td>
                                     <td>{{ $tglA }}</td>
                                     <td>{{ $tglB }}</td>
                                 </tr>

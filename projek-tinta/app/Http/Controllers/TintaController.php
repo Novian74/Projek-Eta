@@ -25,6 +25,14 @@ class TintaController extends Controller
 {
   public function index()
   {
+    // Melakukan pengecekan jika yang login superadmin
+    $level = session('level');
+    if ($level === 'superadmin') {
+      $superadmin = "superadmin";
+    } else {
+      $superadmin = "";
+    }
+
     // Mengambil data catridge dari database
     $catridge = Tinta::where('TC', 2)->get();
 
@@ -32,7 +40,7 @@ class TintaController extends Controller
     $toner = Tinta::where('TC', 1)->get();
 
     // Menampilkan halaman tinta
-    return view('backend.stoktinta', ['catridges' => $catridge, 'toners' => $toner]);
+    return view('backend.stoktinta', ['catridges' => $catridge, 'toners' => $toner, 'superadmin' => $superadmin]);
   }
 
   public function tampilTambahTinta()

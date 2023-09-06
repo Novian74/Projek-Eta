@@ -24,11 +24,19 @@ class PrinterController extends Controller
 {
   public function index()
   {
+    // Melakukan pengecekan jika yang login superadmin
+    $level = session('level');
+    if ($level === 'superadmin') {
+      $superadmin = "superadmin";
+    } else {
+      $superadmin = "";
+    }
+
     // Mengambil data printer diurutkan dari idorint pertama
     $printer = Printer::orderBy('idprint', 'asc')->get();
 
     // Menampilkan halaman printer
-    return view('backend.printer', ['printers' => $printer]);
+    return view('backend.printer', ['printers' => $printer, 'superadmin' => $superadmin]);
   }
 
   public function tampilTambahPrinter()
@@ -50,7 +58,6 @@ class PrinterController extends Controller
 
   public function store(Request $request)
   {
-
     // Membuat validasi dari form input
     $validatedData = $request->validate([
       'printer_name' => 'required',

@@ -85,6 +85,8 @@
                         </tbody>
                     </table>
                 </div>
+                @else
+                Pesanan Tidak Ada
             @endif
         </div>
 

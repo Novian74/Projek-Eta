@@ -46,6 +46,7 @@
                         </select>
                     </div>
                     <input type="submit" class="btn btn-primary" name="Tambah" value="Tambah">
+                    <a href="{{ route('princat.home') }}" class="btn btn-danger">Batal</a>
                 </form>
             </div>
         </main>

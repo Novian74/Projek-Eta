@@ -16,6 +16,7 @@ return new class extends Migration
     // Binary untuk tipe data seperti file pdf
     Schema::create('histori_emails', function (Blueprint $table) {
       $table->id();
+      $table->string('email_penerima');
       $table->string('tgl_kirim');
       $table->binary('pdf');
       $table->timestamps();

@@ -19,7 +19,9 @@ return new class extends Migration
       $table->string('username');
       $table->string('password');
       $table->string('tgl_kirim_email');
-      $table->string('waktu_kirim_email');
+      $table->string('email');
+      $table->string('telegram');
+      $table->string('level');
       $table->timestamps();
     });
   }

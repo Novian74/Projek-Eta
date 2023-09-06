@@ -32,6 +32,14 @@ class BookingController extends Controller
 
   public function index()
   {
+    // Melakukan pengecekan jika yang login superadmin
+    $level = session('level');
+    if ($level === 'superadmin') {
+      $superadmin = "superadmin";
+    } else {
+      $superadmin = "";
+    }
+
     // Mengambil data dari database yang berstatus pending
     $index = DB::table('bookings')
       ->join('pelanggans', 'bookings.iduser', '=', 'pelanggans.iduser')
@@ -43,7 +51,7 @@ class BookingController extends Controller
       ->get();
 
     // Menampilkan data booking & mengirimkan data booking
-    return view('backend.booking', ['bookings' => $index]);
+    return view('backend.booking', ['bookings' => $index, "superadmin" => $superadmin]);
   }
 
   // Parameter nommornota untuk mengetahui pesanan yang akan ready, parameter idcatridge untuk mengurangi stok tinta yang akan digunakan
@@ -66,7 +74,7 @@ class BookingController extends Controller
       Session::flash('success', 'Barang Ready !');
     } else {
       // Jika stok tinta dibawah 0 akan mengeluarkan peringatan dan pesanan tidak bisa menjadi ready
-      Session::flash('error', 'Stok Tinta Habis !');
+      Session::flash('err', 'Stok Tinta Habis !');
     }
 
     // Kembali ke halaman booking
@@ -75,6 +83,14 @@ class BookingController extends Controller
 
   public function pickup()
   {
+    // Melakukan pengecekan jika yang login superadmin
+    $level = session('level');
+    if ($level === 'superadmin') {
+      $superadmin = "superadmin";
+    } else {
+      $superadmin = "";
+    }
+
     // Mengambil data dari database yang berstatus ready
     $pending = DB::table('bookings')
       ->join('pelanggans', 'bookings.iduser', '=', 'pelanggans.iduser')
@@ -86,10 +102,9 @@ class BookingController extends Controller
       ->get();
 
     // Menampilkan data pickup dan mengirim data
-    return view('backend.pickup', ['pickups' => $pending]);
+    return view('backend.pickup', ['pickups' => $pending, "superadmin" => $superadmin]);
   }
 
-  // Parameter nomornota untuk mengetahui pesanan yang akan diselesaikan 
   public function pickupToFinish($nomornota)
   {
     // Mengganti status ready menjadi finish dan menghapus batas waktu
@@ -104,6 +119,14 @@ class BookingController extends Controller
 
   public function history()
   {
+    // Melakukan pengecekan jika yang login superadmin
+    $level = session('level');
+    if ($level === 'superadmin') {
+      $superadmin = "superadmin";
+    } else {
+      $superadmin = "";
+    }
+
     // Mengambil data pesanan dari database yang berstatus finish
     $history = DB::table('bookings')
       ->join('pelanggans', 'bookings.iduser', '=', 'pelanggans.iduser')
@@ -118,13 +141,21 @@ class BookingController extends Controller
     $printer = DB::table('printers')->get();
 
     // Menampilkan halaman histori & mengirim data data
-    return view('backend.history', ['historys' => $history, 'printers' => $printer]);
+    return view('backend.history', ['historys' => $history, 'printers' => $printer, "superadmin" => $superadmin]);
   }
 
   public function report()
   {
+    // Melakukan pengecekan jika yang login superadmin
+    $level = session('level');
+    if ($level === 'superadmin') {
+      $superadmin = "superadmin";
+    } else {
+      $superadmin = "";
+    }
+
     // Menampilkan halaman report
-    return view('backend.report', ['datas' => '']);
+    return view('backend.report', ['datas' => '', 'superadmin' => $superadmin]);
   }
 
   public function tampilData(Request $request)

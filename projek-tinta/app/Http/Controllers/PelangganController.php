@@ -22,11 +22,18 @@ class PelangganController extends Controller
 {
   public function index()
   {
+    // Melakukan pengecekan jika yang login superadmin
+    $level = session('level');
+    if ($level === 'superadmin') {
+      $superadmin = "superadmin";
+    } else {
+      $superadmin = "";
+    }
     // Mengambil data dari database yang diurutkan sesuai iduser pertama
     $pelanggan = Pelanggan::orderBy("iduser", "asc")->get();
 
     // Menampilkan halaman pelanggan
-    return view('backend.pelanggan', ['pelanggans' => $pelanggan]);
+    return view('backend.pelanggan', ['pelanggans' => $pelanggan, "superadmin" => $superadmin]);
   }
 
   public function store(StorePelangganRequest $request)

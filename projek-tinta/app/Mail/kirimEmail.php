@@ -34,6 +34,6 @@ class kirimEmail extends Mailable
     return $this->view('subjek')
       ->attachData($this->pdfContent, 'output.pdf', [
         'mime' => 'application/pdf',
-      ]);
+      ])->subject('Laporan Bulanan');
   }
 }

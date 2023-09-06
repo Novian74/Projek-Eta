@@ -69,6 +69,7 @@
                         </div>
                     @endforeach
                     <input type="submit" class="btn btn-primary" name="Tambah" value="{{ $judul }}">
+                    <a href="{{ route('tinta.home') }}" class="btn btn-danger">Batal</a>
                 </form>
             </div>
         </main>

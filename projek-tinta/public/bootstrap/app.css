@@ -1,0 +1,13 @@
+.dropdown:hover > .dropdown-menu {
+    display: block;
+}
+
+.dropdown > .dropdown-toggle:active {
+    pointer-events: none;
+}
+
+@media (min-width: 1024px) {
+    body {
+        overflow-x: hidden;
+    }
+}

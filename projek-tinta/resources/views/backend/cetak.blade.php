@@ -10,6 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Admin | Cetak Report {{ $periode }}</title>
+    <link rel="stylesheet" href="{{ asset('bootstrap/app.css') }}">
     <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.min.css') }}">
     <script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>
 </head>
@@ -30,8 +31,8 @@
                                 <th>Nama</th>
                                 <th>Departemen</th>
                                 <th>Printer</th>
-                                <th>Catridge</th>
-                                <th>Warna Catridge</th>
+                                <th>Tinta</th>
+                                <th>Warna Tinta</th>
                                 <th>Tanggal Pesan</th>
                                 <th>Tanggal Ambil</th>
                             </tr>

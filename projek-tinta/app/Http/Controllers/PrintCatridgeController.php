@@ -1,18 +1,17 @@
 <?php
 
-/** 
+/**
  * Visual Studio Code v1.79.2
  * Laravel Framework v10.10.1
  * Xampp Control Panel v3.3.0
- * 
- * 
+ *
+ *
  ******* FUNCTION ********
- * function index : Untuk menampilkan halaman relasi 
+ * function index : Untuk menampilkan halaman relasi
  * function tampilTambahRelasi : Untuk menampilkan form relasi
  * function store : Untuk menambah relasi
  * function destroy : Untuk menghapus relasi
  */
-
 
 namespace App\Http\Controllers;
 
@@ -27,6 +26,14 @@ class PrintCatridgeController extends Controller
 {
   public function index()
   {
+    // Melakukan pengecekan jika yang login superadmin
+    $level = session('level');
+    if ($level === 'superadmin') {
+      $superadmin = 'superadmin';
+    } else {
+      $superadmin = '';
+    }
+
     // Membuat relasi antara printer dan tinta dari database
     $printcat = DB::table('print_catridges')
       ->join('printers', 'print_catridges.idprint', '=', 'printers.idprint')
@@ -36,7 +43,7 @@ class PrintCatridgeController extends Controller
       ->get();
 
     // Menampilkan halaman relasi
-    return view('backend.printcat', ['princats' => $printcat]);
+    return view('backend.printcat', ['princats' => $printcat, 'superadmin' => $superadmin]);
   }
 
   public function tampilTambahRelasi()
