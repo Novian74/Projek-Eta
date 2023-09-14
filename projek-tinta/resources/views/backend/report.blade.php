@@ -79,6 +79,7 @@
                     @if ($datas)
                         <a href="{{ route('report.cetak', ['data' => urlencode(json_encode($datas)), 'periode' => $periode]) }}"
                             class="btn btn-success mt-3 ms-3">Download / Print</a>
+                        <a href="{{ route('report.home') }}" class="btn btn-danger mt-3 ms-3">Cari Ulang</a>
                     @endif
                 </form>
             </div>
@@ -95,15 +96,20 @@
                                 <th>Nama Printer</th>
                                 <th>Nama Tinta</th>
                                 <th>Warna Tinta</th>
-                                <th>Tanggal Pesan</th>
-                                <th>Tanggal Ambil</th>
+                                <th>Waktu Pesan</th>
+                                <th>Waktu Ambil</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($datas as $data)
                                 @php
-                                    $tglA = Carbon::createFromFormat('Y-m-d H:i:s', $data->created_at)->format('d-m-Y');
-                                    $tglB = Carbon::createFromFormat('Y-m-d H:i:s', $data->updated_at)->format('d-m-Y');
+                                    $created_at = Carbon::createFromFormat('Y-m-d H:i:s', $data->created_at);
+                                    $created_at->setTimezone('Asia/Jakarta');
+                                    $tglA = $created_at->format('d-m-Y H:i:s');
+                                    
+                                    $updated_at = Carbon::createFromFormat('Y-m-d H:i:s', $data->updated_at);
+                                    $updated_at->setTimezone('Asia/Jakarta');
+                                    $tglB = $updated_at->format('d-m-Y H:i:s');
                                 @endphp
                                 <tr>
                                     <td>{{ $data->nomornota }}</td>

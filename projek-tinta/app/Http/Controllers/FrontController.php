@@ -1,18 +1,18 @@
 <?php
 
-/** 
+/**
  * Visual Studio Code v1.79.2
  * Laravel Framework v10.10.1
  * Xampp Control Panel v3.3.0
- * 
- * 
+ *
+ *
  ******* FUNCTION ********
  * function index : Menampilkan dropdown printer pada halaman utama
  * function cekPrinter : Mengecek model tinta pada printer yang dipilih
  * function pesanTinta : Membuat pesanan tinta
  * function home : Menampilkan halaman lacak pesanan
  * function lacak : Mencari pesanan sesuai yang diinputkan
- * 
+ *
  */
 
 namespace App\Http\Controllers;
@@ -30,7 +30,9 @@ class FrontController extends Controller
   public function index()
   {
     // Mengambil data printer dari database
-    $printer = DB::table('printers')->orderBy("printer_name", 'asc')->get();
+    $printer = DB::table('printers')
+      ->orderBy('printer_name', 'asc')
+      ->get();
 
     // Menampilkan tampilan halaman awal
     return view('frontend.pesan', ['printers' => $printer, 'id' => '']);
@@ -41,13 +43,15 @@ class FrontController extends Controller
     // Mengambil id dari kolom dropdown
     $id = $request->input('printer');
 
-    // Mencari data printer 
-    $printer = DB::table('printers')->orderBy("printer_name", 'asc')->get();
+    // Mencari data printer
+    $printer = DB::table('printers')
+      ->orderBy('printer_name', 'asc')
+      ->get();
     $model = Printer::where('idprint', $id)
       ->select('model_tinta')
       ->get();
 
-    // Membuat variabel untuk menampung model printer 
+    // Membuat variabel untuk menampung model printer
     $angka = $model[0]['model_tinta'];
 
     // Menampilkan form pesanan
@@ -149,17 +153,29 @@ class FrontController extends Controller
 
   public function lacak(Request $request)
   {
-    // Mengambil data form nomornota
-    $nomornota = $request->input('lacak');
+    // Mengambil data form lacak
+    $pilihan = $request->input('pilihan');
+    $lacakI = $request->input('lacak');
 
-    // Mencari data sesuai nomornota
-    $lacak = DB::table('bookings')
-      ->join('pelanggans', 'bookings.iduser', '=', 'pelanggans.iduser')
-      ->join('printers', 'bookings.idprint', '=', 'printers.idprint')
-      ->join('tintas', 'bookings.idcatridge', '=', 'tintas.idcatridge')
-      ->where('bookings.nomornota', '=', $nomornota)
-      ->select('bookings.*', 'pelanggans.nama', 'printers.printer_name', 'tintas.warna')
-      ->get();
+    // Melakukan cari data menggunakan nama dan nomor nota
+    if ($pilihan === 'nota') {
+      $lacak = DB::table('bookings')
+        ->join('pelanggans', 'bookings.iduser', '=', 'pelanggans.iduser')
+        ->join('printers', 'bookings.idprint', '=', 'printers.idprint')
+        ->join('tintas', 'bookings.idcatridge', '=', 'tintas.idcatridge')
+        ->where('bookings.nomornota', '=', $lacakI)
+        ->select('bookings.*', 'pelanggans.nama', 'printers.printer_name', 'tintas.warna')
+        ->get();
+    } else {
+      $lacak = DB::table('bookings')
+        ->join('pelanggans', 'bookings.iduser', '=', 'pelanggans.iduser')
+        ->join('printers', 'bookings.idprint', '=', 'printers.idprint')
+        ->join('tintas', 'bookings.idcatridge', '=', 'tintas.idcatridge')
+        ->where('pelanggans.nama', '=', $lacakI)
+        ->where('bookings.status', '!=', '3')
+        ->select('bookings.*', 'pelanggans.nama', 'printers.printer_name', 'tintas.warna')
+        ->get();
+    }
 
     // Menampilkan datanya
     return view('frontend.lacak', ['datas' => $lacak]);

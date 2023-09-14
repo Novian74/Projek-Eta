@@ -32,7 +32,10 @@
             <h2>Cari Pesanan Anda !</h2>
             <form action="{{ route('pesan.lacak') }}" method="POST">
                 @csrf
-                Nomor Nota :
+                <select name="pilihan" class="form-select-sm">
+                    <option value="nama">Cari Berdasarkan Nama</option>
+                    <option value="nota">Cari Berdasarkan Nomor Nota</option>
+                </select>
                 <input type="text" name="lacak" />
                 <button type="submit">Cari</button>
             </form>
@@ -66,10 +69,6 @@
                                             @case('2')
                                                 READY TO PICKUP
                                             @break
-
-                                            @case('3')
-                                                FINISH
-                                            @break
                                         @endswitch
                                     </td>
                                     <td>
@@ -85,7 +84,7 @@
                         </tbody>
                     </table>
                 </div>
-                @else
+            @else
                 Pesanan Tidak Ada
             @endif
         </div>

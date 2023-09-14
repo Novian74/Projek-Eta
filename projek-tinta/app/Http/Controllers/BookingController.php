@@ -1,20 +1,20 @@
 <?php
 
-/** 
+/**
  * Visual Studio Code v1.79.2
  * Laravel Framework v10.10.1
  * Xampp Control Panel v3.3.0
- * 
- * 
+ *
+ *
  ******* FUNCTION ********
  * function index : Untuk menampilkan halaman booking
  * function pendingToReady : Untuk mengubah status pending menjadi ready
  * function pickup : Untuk menampilkan halaman pickup
  * function pickupToFinish : Untuk mengubah status ready menjadi finish
- * function history : Untuk menampilkan halaman histori 
+ * function history : Untuk menampilkan halaman histori
  * function report : Untuk menampilkan halaman report
  * function tampilData : Untuk menampilkan data yang sudah dicari
- * function cetak : Untuk mencetak data 
+ * function cetak : Untuk mencetak data
  */
 
 namespace App\Http\Controllers;
@@ -29,15 +29,14 @@ use Illuminate\Support\Facades\Session;
 
 class BookingController extends Controller
 {
-
   public function index()
   {
     // Melakukan pengecekan jika yang login superadmin
     $level = session('level');
     if ($level === 'superadmin') {
-      $superadmin = "superadmin";
+      $superadmin = 'superadmin';
     } else {
-      $superadmin = "";
+      $superadmin = '';
     }
 
     // Mengambil data dari database yang berstatus pending
@@ -51,7 +50,7 @@ class BookingController extends Controller
       ->get();
 
     // Menampilkan data booking & mengirimkan data booking
-    return view('backend.booking', ['bookings' => $index, "superadmin" => $superadmin]);
+    return view('backend.booking', ['bookings' => $index, 'superadmin' => $superadmin]);
   }
 
   // Parameter nommornota untuk mengetahui pesanan yang akan ready, parameter idcatridge untuk mengurangi stok tinta yang akan digunakan
@@ -86,9 +85,9 @@ class BookingController extends Controller
     // Melakukan pengecekan jika yang login superadmin
     $level = session('level');
     if ($level === 'superadmin') {
-      $superadmin = "superadmin";
+      $superadmin = 'superadmin';
     } else {
-      $superadmin = "";
+      $superadmin = '';
     }
 
     // Mengambil data dari database yang berstatus ready
@@ -102,7 +101,7 @@ class BookingController extends Controller
       ->get();
 
     // Menampilkan data pickup dan mengirim data
-    return view('backend.pickup', ['pickups' => $pending, "superadmin" => $superadmin]);
+    return view('backend.pickup', ['pickups' => $pending, 'superadmin' => $superadmin]);
   }
 
   public function pickupToFinish($nomornota)
@@ -110,7 +109,7 @@ class BookingController extends Controller
     // Mengganti status ready menjadi finish dan menghapus batas waktu
     Booking::where('nomornota', $nomornota)->update(['status' => 3, 'batasW' => 'not']);
 
-    // Menampilkan pemberitahuan jika pesanan sudah selesai 
+    // Menampilkan pemberitahuan jika pesanan sudah selesai
     Session::flash('success', 'Pesanan Selesai !');
 
     // Mengembalikan ke halaman pickup
@@ -122,9 +121,9 @@ class BookingController extends Controller
     // Melakukan pengecekan jika yang login superadmin
     $level = session('level');
     if ($level === 'superadmin') {
-      $superadmin = "superadmin";
+      $superadmin = 'superadmin';
     } else {
-      $superadmin = "";
+      $superadmin = '';
     }
 
     // Mengambil data pesanan dari database yang berstatus finish
@@ -141,7 +140,7 @@ class BookingController extends Controller
     $printer = DB::table('printers')->get();
 
     // Menampilkan halaman histori & mengirim data data
-    return view('backend.history', ['historys' => $history, 'printers' => $printer, "superadmin" => $superadmin]);
+    return view('backend.history', ['historys' => $history, 'printers' => $printer, 'superadmin' => $superadmin]);
   }
 
   public function report()
@@ -149,9 +148,9 @@ class BookingController extends Controller
     // Melakukan pengecekan jika yang login superadmin
     $level = session('level');
     if ($level === 'superadmin') {
-      $superadmin = "superadmin";
+      $superadmin = 'superadmin';
     } else {
-      $superadmin = "";
+      $superadmin = '';
     }
 
     // Menampilkan halaman report
@@ -160,6 +159,14 @@ class BookingController extends Controller
 
   public function tampilData(Request $request)
   {
+    // Melakukan pengecekan jika yang login superadmin
+    $level = session('level');
+    if ($level === 'superadmin') {
+      $superadmin = 'superadmin';
+    } else {
+      $superadmin = '';
+    }
+
     // Mengambil data dari formulir
     $tanggalawal = $request->input('tanggalAw');
     $tanggalakhir = $request->input('tanggakAkh');
@@ -179,7 +186,7 @@ class BookingController extends Controller
       ->get();
 
     // Menampilkan data ke halaman report
-    return view('backend.report', ['datas' => $report, 'periode' => $periode]);
+    return view('backend.report', ['datas' => $report, 'periode' => $periode, 'superadmin' => $superadmin]);
   }
 
   public function cetak(Request $request)
